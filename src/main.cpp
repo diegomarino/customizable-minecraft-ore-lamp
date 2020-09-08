@@ -17,7 +17,7 @@ Shoutout to Dan J Hamer thingiverse project : https://www.thingiverse.com/thing:
 #define PIXELS 144     // Number of WS2812B leds connected
 #define BUTTON 2       // Digital pin to control the pushbutton
 #define MEMADDRESS 222 // Memory address. Remember that it doesn't physically last more than 100k write operations (or even less!)
-#define SLEEPMILLIS 1800000 // Milliseconds before sleeping the arduino
+#define SLEEPMILLIS 1800000 // Milliseconds before sleeping the arduino  and setting the leds to (0,0,0)
 
 byte selectedColor = 0; // First dimension index initialization for elementsRGBArray
 
@@ -114,6 +114,22 @@ void setup()
 
 void loop()
 {
+elapsedMillis  = millis();
+
+
+    Serial.println(elapsedMillis);
+
+    if (elapsedMillis  > SLEEPMILLIS)
+    {
+        setAllPixels(0, 0, 0);
+        strip.show();
+        sleep_enable();
+        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+        sleep_cpu();
+    }
+
+
+
 
     EEPROM.get(MEMADDRESS, selectedColor);
     //Serial.print("'selectedColor' value: ");
