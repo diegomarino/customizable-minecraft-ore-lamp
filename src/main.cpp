@@ -11,13 +11,17 @@ Shoutout to Dan J Hamer thingiverse project : https://www.thingiverse.com/thing:
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
+#include <avr/sleep.h>
 
 #define LEDPIN 4       // Digital pin to control the leds
 #define PIXELS 144     // Number of WS2812B leds connected
 #define BUTTON 2       // Digital pin to control the pushbutton
 #define MEMADDRESS 222 // Memory address. Remember that it doesn't physically last more than 100k write operations (or even less!)
+#define SLEEPMILLIS 1800000 // Milliseconds before sleeping the arduino
 
 byte selectedColor = 0; // First dimension index initialization for elementsRGBArray
+
+unsigned long elapsedMillis = 0;
 
 const int elementsRGBArray[][3] = {
     {0, 255, 255},  // DIAMOND
@@ -35,6 +39,26 @@ void changeColor()
 {
     if (digitalRead(BUTTON) == HIGH)
     {
+        selectedColor++;
+        //  unsigned long elapsedMillis  = millis();
+
+//     Serial.println(elapsedMillis);
+
+//     if (elapsedMillis  > SLEEPMILLIS)
+//     {
+//         setAllPixels(0, 0, 0);
+//         strip.show();
+//         sleep_enable();
+//         set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+//         digitalWrite(LED_BUILTIN, LOW);
+//         sleep_cpu();
+//     }
+
+
+        if(selectedColor >= (sizeof(elementsRGBArray) / sizeof(elementsRGBArray[0])))
+        {
+            selectedColor = 0;
+        }
 
         EEPROM.put(MEMADDRESS, selectedColor);
         asm volatile("  jmp 0"); // let's reset the board
@@ -90,12 +114,9 @@ void setup()
 
 void loop()
 {
+
     EEPROM.get(MEMADDRESS, selectedColor);
     //Serial.print("'selectedColor' value: ");
     //Serial.println(selectedColor);
     FadeInOut(elementsRGBArray[selectedColor][0], elementsRGBArray[selectedColor][1], elementsRGBArray[selectedColor][2]);
 }
-
-/* *
-* TODO Add a timer to power-down the lamp after 30 minutes 
-*/
