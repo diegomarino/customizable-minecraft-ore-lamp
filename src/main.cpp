@@ -40,20 +40,6 @@ void changeColor()
     if (digitalRead(BUTTON) == HIGH)
     {
         selectedColor++;
-        //  unsigned long elapsedMillis  = millis();
-
-//     Serial.println(elapsedMillis);
-
-//     if (elapsedMillis  > SLEEPMILLIS)
-//     {
-//         setAllPixels(0, 0, 0);
-//         strip.show();
-//         sleep_enable();
-//         set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-//         digitalWrite(LED_BUILTIN, LOW);
-//         sleep_cpu();
-//     }
-
 
         if(selectedColor >= (sizeof(elementsRGBArray) / sizeof(elementsRGBArray[0])))
         {
